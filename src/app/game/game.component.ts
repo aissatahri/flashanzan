@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { GameService, Difficulty, GameState, OperationType } from '../services/game.service';
 import { TranslationService, Translation, Language } from '../services/translation.service';
+import { ScoreService } from '../services/score.service';
+import { BadgeService, Badge } from '../services/badge.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -42,6 +44,12 @@ export class GameComponent implements OnInit, OnDestroy {
   availableLanguages = this.translationService.getAvailableLanguages();
   showCustomModal = false; // Pour la modal de personnalisation
 
+  // Scores et Badges
+  showScoresModal = false;
+  showBadgesModal = false;
+  newlyUnlockedBadges: Badge[] = [];
+  showBadgeUnlockModal = false;
+
   // Options de personnalisation
   customOperationType: OperationType = OperationType.ADDITION;
   customMinDigits: number = 1; // Nombre minimum de chiffres
@@ -67,7 +75,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   constructor(
     private gameService: GameService,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private scoreService: ScoreService,
+    private badgeService: BadgeService
   ) {
     // Initialiser le contexte audio
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -307,7 +317,84 @@ export class GameComponent implements OnInit, OnDestroy {
     if (this.userAnswer !== null) {
       this.isCorrect = this.gameService.checkAnswer(this.userAnswer);
       this.correctAnswer = this.gameService.getCorrectAnswer();
+      
+      // Enregistrer le score
+      this.saveScore();
+      
       this.showDialog = true;
+    }
+  }
+
+  /**
+   * Enregistrer le score de la partie
+   */
+  private saveScore(): void {
+    const difficulty = this.getDifficultyName();
+    const digitsCount = this.selectedDifficulty === Difficulty.CUSTOM 
+      ? `${this.customMinDigits}-${this.customMaxDigits}`
+      : this.getDigitsForDifficulty();
+    
+    this.scoreService.addScore({
+      difficulty,
+      correctAnswer: this.correctAnswer,
+      userAnswer: this.userAnswer || 0,
+      isCorrect: this.isCorrect,
+      numbersCount: this.currentNumbers.length,
+      digitsCount,
+      operationType: this.getOperationTypeName(),
+      displayTime: this.selectedDifficulty === Difficulty.CUSTOM 
+        ? this.customDisplayTime 
+        : this.getDisplayTimeForDifficulty()
+    });
+
+    // Vérifier les nouveaux badges débloqués
+    const newBadges = this.badgeService.updateBadges();
+    if (newBadges.length > 0) {
+      this.newlyUnlockedBadges = newBadges;
+      // Afficher la notification de badge après un court délai
+      setTimeout(() => {
+        this.showBadgeUnlockModal = true;
+      }, 1500);
+    }
+  }
+
+  private getDifficultyName(): string {
+    switch (this.selectedDifficulty) {
+      case Difficulty.EASY: return 'Facile';
+      case Difficulty.MEDIUM: return 'Moyen';
+      case Difficulty.HARD: return 'Difficile';
+      case Difficulty.CUSTOM: return 'Personnalisé';
+      default: return 'Inconnu';
+    }
+  }
+
+  private getDigitsForDifficulty(): string {
+    switch (this.selectedDifficulty) {
+      case Difficulty.EASY: return '1';
+      case Difficulty.MEDIUM: return '2';
+      case Difficulty.HARD: return '3';
+      default: return '1';
+    }
+  }
+
+  private getOperationTypeName(): string {
+    if (this.selectedDifficulty === Difficulty.CUSTOM) {
+      switch (this.customOperationType) {
+        case OperationType.ADDITION: return 'Addition';
+        case OperationType.SUBTRACTION: return 'Soustraction';
+        case OperationType.MIXED: return 'Mixte';
+        default: return 'Addition';
+      }
+    }
+    return 'Addition';
+  }
+
+  private getDisplayTimeForDifficulty(): number {
+    switch (this.selectedDifficulty) {
+      case Difficulty.EASY: return 2000;
+      case Difficulty.MEDIUM: return 1000;
+      case Difficulty.HARD: return 700;
+      default: return 1000;
     }
   }
 
@@ -401,5 +488,35 @@ export class GameComponent implements OnInit, OnDestroy {
       case OperationType.MIXED: return 'Addition/Soustraction';
       default: return '';
     }
+  }
+
+  // Méthodes pour les Scores et Badges
+  openScoresModal(): void {
+    this.showScoresModal = true;
+  }
+
+  closeScoresModal(): void {
+    this.showScoresModal = false;
+  }
+
+  openBadgesModal(): void {
+    this.showBadgesModal = true;
+  }
+
+  closeBadgesModal(): void {
+    this.showBadgesModal = false;
+  }
+
+  closeBadgeUnlockModal(): void {
+    this.showBadgeUnlockModal = false;
+    this.newlyUnlockedBadges = [];
+  }
+
+  getScoreService(): ScoreService {
+    return this.scoreService;
+  }
+
+  getBadgeService(): BadgeService {
+    return this.badgeService;
   }
 }

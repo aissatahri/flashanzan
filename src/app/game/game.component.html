@@ -15,6 +15,16 @@
     </div>
   </div>
 
+  <!-- Boutons Scores et Badges -->
+  <div class="top-buttons">
+    <button class="top-button scores-button" (click)="openScoresModal()" [title]="t.scores">
+      📊
+    </button>
+    <button class="top-button badges-button" (click)="openBadgesModal()" [title]="t.badges">
+      🏆
+    </button>
+  </div>
+
   <div class="header">
     <h1>{{ t.appTitle }}</h1>
     <p class="subtitle">{{ t.subtitle }}</p>
@@ -410,6 +420,164 @@
         </button>
         <button (click)="hideResultDialog()" class="btn btn-close">
           ✖️ {{ t.close }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Scores -->
+  <div class="modal-overlay" *ngIf="showScoresModal" (click)="closeScoresModal()">
+    <div class="modal-content scores-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>📊 {{ t.scores }}</h2>
+        <button class="close-btn" (click)="closeScoresModal()">✖️</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Statistiques -->
+        <div class="statistics-section">
+          <h3>{{ t.statistics }}</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">{{ getScoreService().getStats().totalGames }}</div>
+              <div class="stat-label">{{ t.totalGames }}</div>
+            </div>
+            <div class="stat-card success">
+              <div class="stat-value">{{ getScoreService().getStats().correctGames }}</div>
+              <div class="stat-label">{{ t.correctGames }}</div>
+            </div>
+            <div class="stat-card error">
+              <div class="stat-value">{{ getScoreService().getStats().incorrectGames }}</div>
+              <div class="stat-label">{{ t.incorrectGames }}</div>
+            </div>
+            <div class="stat-card rate">
+              <div class="stat-value">{{ getScoreService().getStats().successRate }}%</div>
+              <div class="stat-label">{{ t.successRate }}</div>
+            </div>
+            <div class="stat-card streak">
+              <div class="stat-value">🔥 {{ getScoreService().getStats().bestStreak }}</div>
+              <div class="stat-label">{{ t.bestStreak }}</div>
+            </div>
+            <div class="stat-card current">
+              <div class="stat-value">⚡ {{ getScoreService().getStats().currentStreak }}</div>
+              <div class="stat-label">{{ t.currentStreak }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historique des scores -->
+        <div class="scores-section">
+          <h3>{{ t.recentGames }}</h3>
+          <div class="scores-list" *ngIf="getScoreService().getRecentScores(10).length > 0">
+            <div 
+              class="score-item" 
+              *ngFor="let score of getScoreService().getRecentScores(10)"
+              [class.correct]="score.isCorrect"
+              [class.incorrect]="!score.isCorrect">
+              <div class="score-status">
+                <span class="status-icon">{{ score.isCorrect ? '✅' : '❌' }}</span>
+                <span class="status-text">{{ score.isCorrect ? t.correct : t.incorrect }}</span>
+              </div>
+              <div class="score-details">
+                <span class="score-difficulty">{{ score.difficulty }}</span>
+                <span class="score-info">{{ score.numbersCount }} nombres • {{ score.digitsCount }} chiffres</span>
+              </div>
+              <div class="score-date">{{ score.date | date:'short' }}</div>
+            </div>
+          </div>
+          <div class="no-scores" *ngIf="getScoreService().getRecentScores(10).length === 0">
+            <p>{{ t.noScoresYet }}</p>
+            <p class="no-scores-hint">{{ t.playFirstGame }}</p>
+          </div>
+        </div>
+
+        <button class="btn btn-clear-scores" (click)="getScoreService().clearScores()">
+          🗑️ {{ t.clearScores }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Badges -->
+  <div class="modal-overlay" *ngIf="showBadgesModal" (click)="closeBadgesModal()">
+    <div class="modal-content badges-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>🏆 {{ t.badges }}</h2>
+        <button class="close-btn" (click)="closeBadgesModal()">✖️</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="badges-summary">
+          <div class="badge-count">
+            <span class="count">{{ getBadgeService().getUnlockedBadges().length }}</span>
+            <span class="total">/ {{ getBadgeService().getBadges().length }}</span>
+            <span class="label">{{ t.unlocked }}</span>
+          </div>
+        </div>
+
+        <!-- Badges débloqués -->
+        <div class="badges-section" *ngIf="getBadgeService().getUnlockedBadges().length > 0">
+          <h3>{{ t.unlocked }}</h3>
+          <div class="badges-grid">
+            <div 
+              class="badge-card unlocked" 
+              *ngFor="let badge of getBadgeService().getUnlockedBadges()"
+              [class]="'level-' + badge.level">
+              <div class="badge-icon">{{ badge.icon }}</div>
+              <div class="badge-info">
+                <div class="badge-name">{{ translationService.currentLanguage === 'ar' ? badge.nameAr : (translationService.currentLanguage === 'en' ? badge.nameEn : badge.name) }}</div>
+                <div class="badge-description">{{ translationService.currentLanguage === 'ar' ? badge.descriptionAr : (translationService.currentLanguage === 'en' ? badge.descriptionEn : badge.description) }}</div>
+                <div class="badge-level">{{ badge.level === 'bronze' ? t.bronze : (badge.level === 'silver' ? t.silver : (badge.level === 'gold' ? t.gold : t.platinum)) }}</div>
+                <div class="badge-unlocked-date" *ngIf="badge.unlockedDate">
+                  {{ t.unlockedOn }} {{ badge.unlockedDate | date:'short' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges verrouillés -->
+        <div class="badges-section" *ngIf="getBadgeService().getLockedBadges().length > 0">
+          <h3>{{ t.locked }}</h3>
+          <div class="badges-grid">
+            <div 
+              class="badge-card locked" 
+              *ngFor="let badge of getBadgeService().getLockedBadges()"
+              [class]="'level-' + badge.level">
+              <div class="badge-icon grayscale">{{ badge.icon }}</div>
+              <div class="badge-info">
+                <div class="badge-name">{{ translationService.currentLanguage === 'ar' ? badge.nameAr : (translationService.currentLanguage === 'en' ? badge.nameEn : badge.name) }}</div>
+                <div class="badge-description">{{ translationService.currentLanguage === 'ar' ? badge.descriptionAr : (translationService.currentLanguage === 'en' ? badge.descriptionEn : badge.description) }}</div>
+                <div class="badge-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="badge.progress"></div>
+                  </div>
+                  <div class="progress-text">{{ badge.currentValue }} / {{ badge.requirement }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Badge Débloqué -->
+  <div class="modal-overlay badge-unlock-overlay" *ngIf="showBadgeUnlockModal" (click)="closeBadgeUnlockModal()">
+    <div class="modal-content badge-unlock-modal" (click)="$event.stopPropagation()">
+      <div class="badge-unlock-animation">
+        <div class="badge-unlock-icon">🎉</div>
+        <h2>{{ t.achievements }}</h2>
+        <div class="unlocked-badges">
+          <div class="unlocked-badge" *ngFor="let badge of newlyUnlockedBadges">
+            <div class="badge-icon-large">{{ badge.icon }}</div>
+            <div class="badge-name-large">{{ translationService.currentLanguage === 'ar' ? badge.nameAr : (translationService.currentLanguage === 'en' ? badge.nameEn : badge.name) }}</div>
+            <div class="badge-description-large">{{ translationService.currentLanguage === 'ar' ? badge.descriptionAr : (translationService.currentLanguage === 'en' ? badge.descriptionEn : badge.description) }}</div>
+            <div class="badge-level-large">{{ badge.level === 'bronze' ? t.bronze : (badge.level === 'silver' ? t.silver : (badge.level === 'gold' ? t.gold : t.platinum)) }}</div>
+          </div>
+        </div>
+        <button class="btn btn-close-unlock" (click)="closeBadgeUnlockModal()">
+          {{ t.close }}
         </button>
       </div>
     </div>

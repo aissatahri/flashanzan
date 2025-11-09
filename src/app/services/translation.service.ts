@@ -69,6 +69,36 @@ export interface Translation {
   tryAgain: string;
   correctAnswer: string;
   calculation: string;
+  
+  // Scores & Statistics
+  scores: string;
+  statistics: string;
+  recentGames: string;
+  totalGames: string;
+  correctGames: string;
+  incorrectGames: string;
+  successRate: string;
+  bestStreak: string;
+  currentStreak: string;
+  clearScores: string;
+  noScoresYet: string;
+  playFirstGame: string;
+  correct: string;
+  incorrect: string;
+  
+  // Badges
+  badges: string;
+  achievements: string;
+  unlocked: string;
+  locked: string;
+  progress: string;
+  unlockedOn: string;
+  resetBadges: string;
+  confirmReset: string;
+  bronze: string;
+  silver: string;
+  gold: string;
+  platinum: string;
 }
 
 const translations: Record<Language, Translation> = {
@@ -120,7 +150,33 @@ const translations: Record<Language, Translation> = {
     wrongAnswer: 'Ce n\'est pas la bonne réponse...',
     tryAgain: 'Réessayez pour vous améliorer !',
     correctAnswer: 'Réponse correcte :',
-    calculation: 'Calcul :'
+    calculation: 'Calcul :',
+    scores: 'Scores',
+    statistics: 'Statistiques',
+    recentGames: 'Parties récentes',
+    totalGames: 'Parties jouées',
+    correctGames: 'Réussites',
+    incorrectGames: 'Échecs',
+    successRate: 'Taux de réussite',
+    bestStreak: 'Meilleure série',
+    currentStreak: 'Série actuelle',
+    clearScores: 'Effacer l\'historique',
+    noScoresYet: 'Aucun score enregistré',
+    playFirstGame: 'Jouez votre première partie pour commencer !',
+    correct: 'Réussi',
+    incorrect: 'Échoué',
+    badges: 'Badges',
+    achievements: 'Succès',
+    unlocked: 'Débloqué',
+    locked: 'Verrouillé',
+    progress: 'Progression',
+    unlockedOn: 'Débloqué le',
+    resetBadges: 'Réinitialiser les badges',
+    confirmReset: 'Êtes-vous sûr ?',
+    bronze: 'Bronze',
+    silver: 'Argent',
+    gold: 'Or',
+    platinum: 'Platine'
   },
   en: {
     appTitle: 'FlashAnzan',
@@ -170,7 +226,33 @@ const translations: Record<Language, Translation> = {
     wrongAnswer: 'That\'s not the right answer...',
     tryAgain: 'Try again to improve!',
     correctAnswer: 'Correct answer:',
-    calculation: 'Calculation:'
+    calculation: 'Calculation:',
+    scores: 'Scores',
+    statistics: 'Statistics',
+    recentGames: 'Recent games',
+    totalGames: 'Games played',
+    correctGames: 'Successes',
+    incorrectGames: 'Failures',
+    successRate: 'Success rate',
+    bestStreak: 'Best streak',
+    currentStreak: 'Current streak',
+    clearScores: 'Clear history',
+    noScoresYet: 'No scores yet',
+    playFirstGame: 'Play your first game to start!',
+    correct: 'Correct',
+    incorrect: 'Incorrect',
+    badges: 'Badges',
+    achievements: 'Achievements',
+    unlocked: 'Unlocked',
+    locked: 'Locked',
+    progress: 'Progress',
+    unlockedOn: 'Unlocked on',
+    resetBadges: 'Reset badges',
+    confirmReset: 'Are you sure?',
+    bronze: 'Bronze',
+    silver: 'Silver',
+    gold: 'Gold',
+    platinum: 'Platinum'
   },
   ar: {
     appTitle: 'فلاش أنزان',
@@ -220,7 +302,33 @@ const translations: Record<Language, Translation> = {
     wrongAnswer: 'هذه ليست الإجابة الصحيحة...',
     tryAgain: 'حاول مرة أخرى للتحسين!',
     correctAnswer: 'الإجابة الصحيحة:',
-    calculation: 'الحساب:'
+    calculation: 'الحساب:',
+    scores: 'النتائج',
+    statistics: 'الإحصائيات',
+    recentGames: 'الألعاب الأخيرة',
+    totalGames: 'الألعاب الملعوبة',
+    correctGames: 'النجاحات',
+    incorrectGames: 'الإخفاقات',
+    successRate: 'معدل النجاح',
+    bestStreak: 'أفضل سلسلة',
+    currentStreak: 'السلسلة الحالية',
+    clearScores: 'مسح السجل',
+    noScoresYet: 'لا توجد نتائج بعد',
+    playFirstGame: 'العب لعبتك الأولى للبدء!',
+    correct: 'صحيح',
+    incorrect: 'خطأ',
+    badges: 'الشارات',
+    achievements: 'الإنجازات',
+    unlocked: 'مفتوح',
+    locked: 'مقفل',
+    progress: 'التقدم',
+    unlockedOn: 'تم فتحه في',
+    resetBadges: 'إعادة تعيين الشارات',
+    confirmReset: 'هل أنت متأكد؟',
+    bronze: 'برونزي',
+    silver: 'فضي',
+    gold: 'ذهبي',
+    platinum: 'بلاتيني'
   }
 };
 
