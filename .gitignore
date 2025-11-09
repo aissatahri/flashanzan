@@ -89,3 +89,13 @@ android/app/outputs/logs/
 # Scripts PowerShell (optionnel - vous pouvez les committer)
 # build-release.ps1
 # build-apk.ps1
+
+# ========================================
+# FICHIERS DE SÉCURITÉ (INFORMATIONS SENSIBLES)
+# ========================================
+
+# Document contenant mots de passe et infos keystore
+SECURITY_BACKUP_INFO.txt
+SECURITY_*.txt
+*_SECURITY.txt
+*_PASSWORDS.txt
