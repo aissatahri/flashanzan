@@ -2023,3 +2023,289 @@
     text-align: left;
   }
 }
+
+/* ============================================
+   BARRE FLOTTANTE EN BAS
+   ============================================ */
+.floating-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 1000;
+}
+
+.floating-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  min-width: 70px;
+}
+
+.floating-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.floating-btn:active {
+  transform: translateY(-1px);
+}
+
+.floating-icon {
+  font-size: 1.8rem;
+  display: block;
+}
+
+.floating-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Menu langue popup */
+.language-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.3s ease;
+}
+
+.language-popup-content {
+  background: white;
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  padding: 30px 20px;
+  padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.language-popup-content h3 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+
+.language-option-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border: 2px solid #ecf0f1;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.language-option-new:hover {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-color: #667eea;
+  transform: translateX(5px);
+}
+
+.language-option-new.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #667eea;
+  color: white;
+}
+
+.lang-flag {
+  font-size: 2rem;
+  margin-right: 15px;
+}
+
+.lang-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.lang-check {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* ============================================
+   MODAL ABOUT
+   ============================================ */
+.about-modal .modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.about-body {
+  text-align: center;
+}
+
+.about-logo {
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.about-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.about-app-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.about-version {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.about-section {
+  margin-bottom: 25px;
+  text-align: left;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.about-section h3 {
+  color: #667eea;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 8px;
+}
+
+.about-section p {
+  line-height: 1.8;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.about-developer {
+  font-size: 1.1rem;
+}
+
+.about-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+  padding: 5px 0;
+}
+
+.about-link:hover {
+  color: #764ba2;
+  transform: translateX(5px);
+}
+
+.about-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #ecf0f1;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.btn-close-about {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  margin-top: 20px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .floating-bottom-bar {
+    padding: 8px 10px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .floating-btn {
+    min-width: 60px;
+    padding: 6px 8px;
+  }
+
+  .floating-icon {
+    font-size: 1.5rem;
+  }
+
+  .floating-label {
+    font-size: 0.65rem;
+  }
+
+  .about-logo {
+    padding: 20px 15px;
+  }
+
+  .about-icon {
+    font-size: 3rem;
+  }
+
+  .about-app-name {
+    font-size: 2rem;
+  }
+
+  .about-section {
+    padding: 15px;
+  }
+
+  .about-section h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Ajuster le container principal pour le floating bar */
+.game-container {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}

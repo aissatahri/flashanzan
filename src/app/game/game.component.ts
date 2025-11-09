@@ -47,6 +47,7 @@ export class GameComponent implements OnInit, OnDestroy {
   // Scores et Badges
   showScoresModal = false;
   showBadgesModal = false;
+  showAboutModal = false;
   newlyUnlockedBadges: Badge[] = [];
   showBadgeUnlockModal = false;
 
@@ -510,6 +511,14 @@ export class GameComponent implements OnInit, OnDestroy {
   closeBadgeUnlockModal(): void {
     this.showBadgeUnlockModal = false;
     this.newlyUnlockedBadges = [];
+  }
+
+  openAboutModal(): void {
+    this.showAboutModal = true;
+  }
+
+  closeAboutModal(): void {
+    this.showAboutModal = false;
   }
 
   getScoreService(): ScoreService {

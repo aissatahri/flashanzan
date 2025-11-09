@@ -99,6 +99,20 @@ export interface Translation {
   silver: string;
   gold: string;
   platinum: string;
+  
+  // About
+  about: string;
+  aboutTitle: string;
+  aboutDescription: string;
+  language: string;
+  selectLanguage: string;
+  developer: string;
+  version: string;
+  description: string;
+  links: string;
+  website: string;
+  privacy: string;
+  allRightsReserved: string;
 }
 
 const translations: Record<Language, Translation> = {
@@ -176,7 +190,19 @@ const translations: Record<Language, Translation> = {
     bronze: 'Bronze',
     silver: 'Argent',
     gold: 'Or',
-    platinum: 'Platine'
+    platinum: 'Platine',
+    about: 'À propos',
+    aboutTitle: 'À propos de FlashAnzan',
+    aboutDescription: 'FlashAnzan est une application d\'entraînement au calcul mental basée sur la méthode japonaise Anzan. Entraînez votre esprit à calculer rapidement en additionnant ou soustrayant des nombres qui s\'affichent à l\'écran.',
+    language: 'Langue',
+    selectLanguage: 'Sélectionner la langue',
+    developer: 'Développeur',
+    version: 'Version',
+    description: 'Description',
+    links: 'Liens',
+    website: 'Site web',
+    privacy: 'Politique de confidentialité',
+    allRightsReserved: 'Tous droits réservés'
   },
   en: {
     appTitle: 'FlashAnzan',
@@ -252,7 +278,19 @@ const translations: Record<Language, Translation> = {
     bronze: 'Bronze',
     silver: 'Silver',
     gold: 'Gold',
-    platinum: 'Platinum'
+    platinum: 'Platinum',
+    about: 'About',
+    aboutTitle: 'About FlashAnzan',
+    aboutDescription: 'FlashAnzan is a mental arithmetic training application based on the Japanese Anzan method. Train your mind to calculate rapidly by adding or subtracting numbers that flash on screen.',
+    language: 'Language',
+    selectLanguage: 'Select Language',
+    developer: 'Developer',
+    version: 'Version',
+    description: 'Description',
+    links: 'Links',
+    website: 'Website',
+    privacy: 'Privacy Policy',
+    allRightsReserved: 'All rights reserved'
   },
   ar: {
     appTitle: 'فلاش أنزان',
@@ -328,7 +366,19 @@ const translations: Record<Language, Translation> = {
     bronze: 'برونزي',
     silver: 'فضي',
     gold: 'ذهبي',
-    platinum: 'بلاتيني'
+    platinum: 'بلاتيني',
+    about: 'حول',
+    aboutTitle: 'حول فلاش أنزان',
+    aboutDescription: 'فلاش أنزان هو تطبيق لتدريب الحساب الذهني بناءً على طريقة أنزان اليابانية. دَرِّب عقلك على الحساب السريع عن طريق جمع أو طرح الأرقام التي تظهر على الشاشة.',
+    language: 'اللغة',
+    selectLanguage: 'اختر اللغة',
+    developer: 'المطور',
+    version: 'الإصدار',
+    description: 'الوصف',
+    links: 'الروابط',
+    website: 'الموقع الإلكتروني',
+    privacy: 'سياسة الخصوصية',
+    allRightsReserved: 'جميع الحقوق محفوظة'
   }
 };
 

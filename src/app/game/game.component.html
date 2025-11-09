@@ -1,30 +1,4 @@
 <div class="game-container">
-  <!-- Menu de langue -->
-  <div class="language-selector">
-    <button class="language-button" (click)="toggleLanguageMenu()">
-      🌍
-    </button>
-    <div class="language-menu" *ngIf="showLanguageMenu">
-      <button 
-        *ngFor="let lang of availableLanguages"
-        class="language-option"
-        [class.active]="translationService.currentLanguage === lang.code"
-        (click)="changeLanguage(lang.code)">
-        {{ lang.flag }} {{ lang.name }}
-      </button>
-    </div>
-  </div>
-
-  <!-- Boutons Scores et Badges -->
-  <div class="top-buttons">
-    <button class="top-button scores-button" (click)="openScoresModal()" [title]="t.scores">
-      📊
-    </button>
-    <button class="top-button badges-button" (click)="openBadgesModal()" [title]="t.badges">
-      🏆
-    </button>
-  </div>
-
   <div class="header">
     <h1>{{ t.appTitle }}</h1>
     <p class="subtitle">{{ t.subtitle }}</p>
@@ -580,6 +554,88 @@
           {{ t.close }}
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Barre flottante en bas -->
+  <div class="floating-bottom-bar">
+    <button class="floating-btn" (click)="toggleLanguageMenu()" [title]="t.language || 'Language'">
+      <span class="floating-icon">🌐</span>
+      <span class="floating-label">{{ t.language || 'Lang' }}</span>
+    </button>
+    <button class="floating-btn" (click)="openScoresModal()" [title]="t.scores">
+      <span class="floating-icon">📊</span>
+      <span class="floating-label">{{ t.scores }}</span>
+    </button>
+    <button class="floating-btn" (click)="openBadgesModal()" [title]="t.badges">
+      <span class="floating-icon">🏆</span>
+      <span class="floating-label">{{ t.badges }}</span>
+    </button>
+    <button class="floating-btn" (click)="openAboutModal()" [title]="t.about || 'About'">
+      <span class="floating-icon">ℹ️</span>
+      <span class="floating-label">{{ t.about || 'About' }}</span>
+    </button>
+  </div>
+
+  <!-- Menu de langue (popup) -->
+  <div class="language-popup" *ngIf="showLanguageMenu" (click)="toggleLanguageMenu()">
+    <div class="language-popup-content" (click)="$event.stopPropagation()">
+      <h3>{{ t.selectLanguage || 'Select Language' }}</h3>
+      <button 
+        *ngFor="let lang of availableLanguages"
+        class="language-option-new"
+        [class.active]="translationService.currentLanguage === lang.code"
+        (click)="changeLanguage(lang.code)">
+        <span class="lang-flag">{{ lang.flag }}</span>
+        <span class="lang-name">{{ lang.name }}</span>
+        <span class="lang-check" *ngIf="translationService.currentLanguage === lang.code">✓</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal About -->
+  <div class="modal-overlay" *ngIf="showAboutModal" (click)="closeAboutModal()">
+    <div class="modal-content about-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ t.aboutTitle || 'About FlashAnzan' }}</h2>
+        <button class="btn-close-modal" (click)="closeAboutModal()">×</button>
+      </div>
+      <div class="modal-body about-body">
+        <div class="about-logo">
+          <div class="about-icon">🧮</div>
+          <h1 class="about-app-name">FlashAnzan</h1>
+          <p class="about-version">{{ t.version || 'Version' }} 1.0.4</p>
+        </div>
+        
+        <div class="about-section">
+          <h3>{{ t.description || 'Description' }}</h3>
+          <p>{{ t.aboutDescription || 'FlashAnzan is a mental arithmetic training application based on the Japanese Anzan method. Train your mind to calculate rapidly by adding or subtracting numbers that flash on screen.' }}</p>
+        </div>
+
+        <div class="about-section">
+          <h3>{{ t.developer || 'Developer' }}</h3>
+          <p class="about-developer">
+            <strong>Azmicro</strong><br>
+            <a href="mailto:aissatahri71@gmail.com" class="about-link">aissatahri71@gmail.com</a>
+          </p>
+        </div>
+
+        <div class="about-section">
+          <h3>{{ t.links || 'Links' }}</h3>
+          <p>
+            <a href="https://flashanzan.vercel.app" target="_blank" class="about-link">🌐 {{ t.website || 'Website' }}</a><br>
+            <a href="https://github.com/aissatahri/flashanzan" target="_blank" class="about-link">💻 GitHub</a><br>
+            <a href="https://aissatahri.github.io/flashanzan/" target="_blank" class="about-link">📄 {{ t.privacy || 'Privacy Policy' }}</a>
+          </p>
+        </div>
+
+        <div class="about-footer">
+          <p>© 2025 Azmicro. {{ t.allRightsReserved || 'All rights reserved' }}.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-close-about" (click)="closeAboutModal()">
+        {{ t.close }}
+      </button>
     </div>
   </div>
 </div>
