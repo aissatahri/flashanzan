@@ -1,15 +1,7 @@
 {
   "version": 2,
-  "name": "flashanzan",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/flashanzan-app/browser"
-      }
-    }
-  ],
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "dist/flashanzan-app",
   "routes": [
     {
       "src": "/(.*)",

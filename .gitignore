@@ -99,3 +99,5 @@ SECURITY_BACKUP_INFO.txt
 SECURITY_*.txt
 *_SECURITY.txt
 *_PASSWORDS.txt
+
+.vercel
