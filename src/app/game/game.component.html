@@ -58,7 +58,9 @@
   <!-- Zone d'affichage des nombres -->
   <div class="display-area" *ngIf="gameState.isPlaying">
     <div class="number-display">
-      <div class="current-number" *ngIf="gameState.currentNumber !== null">
+      <div class="current-number" 
+           *ngIf="gameState.currentNumber !== null"
+           [style.color]="getCurrentNumberColor()">
         <span class="number-sign" *ngIf="gameState.currentNumber < 0">-</span>
         <span class="number-sign positive" *ngIf="gameState.currentNumber > 0 && gameState.numbersShown.length > 1">+</span>
         {{ Math.abs(gameState.currentNumber) }}
@@ -97,7 +99,7 @@
           <div class="calculation-display">
             <span *ngFor="let num of currentNumbers; let i = index">
               <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
-              <span class="calc-number">{{ Math.abs(num) }}</span>
+              <span class="calc-number" [style.color]="getColorByIndex(i)">{{ Math.abs(num) }}</span>
             </span>
             <span class="operator">=</span>
             <span class="calc-result">{{ correctAnswer }}</span>
@@ -132,95 +134,144 @@
       </div>
       
       <div class="dialog-content custom-content">
-        <!-- Type de problème -->
+        <!-- Type d'opération - Boutons radio stylisés -->
         <div class="option-group">
           <label class="option-label">{{ t.problemType }}</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input 
-                type="radio" 
-                name="operationType" 
-                [value]="operationTypes.ADDITION"
-                [(ngModel)]="customOperationType">
-              {{ t.addition }}
-            </label>
-            <label class="radio-option">
-              <input 
-                type="radio" 
-                name="operationType" 
-                [value]="operationTypes.SUBTRACTION"
-                [(ngModel)]="customOperationType">
-              {{ t.subtraction }}
-            </label>
-            <label class="radio-option">
-              <input 
-                type="radio" 
-                name="operationType" 
-                [value]="operationTypes.MIXED"
-                [(ngModel)]="customOperationType">
-              {{ t.mixed }}
-            </label>
+          <div class="button-group-inline">
+            <button 
+              type="button"
+              class="toggle-btn"
+              [class.active]="customOperationType === operationTypes.ADDITION"
+              (click)="customOperationType = operationTypes.ADDITION">
+              ➕ {{ t.addition }}
+            </button>
+            <button 
+              type="button"
+              class="toggle-btn"
+              [class.active]="customOperationType === operationTypes.SUBTRACTION"
+              (click)="customOperationType = operationTypes.SUBTRACTION">
+              ➖ {{ t.subtraction }}
+            </button>
+            <button 
+              type="button"
+              class="toggle-btn"
+              [class.active]="customOperationType === operationTypes.MIXED"
+              (click)="customOperationType = operationTypes.MIXED">
+              ➕➖ {{ t.mixed }}
+            </button>
           </div>
         </div>
 
-        <!-- Nombre minimum de chiffres -->
+        <!-- Nombre MINIMUM de chiffres -->
         <div class="option-group">
-          <label class="option-label">{{ t.minDigits }}</label>
-          <div class="radio-group digit-group">
-            <label class="radio-option" *ngFor="let digit of digitOptions">
-              <input 
-                type="radio" 
-                name="minDigits" 
-                [value]="digit"
-                [(ngModel)]="customMinDigits">
-              {{ digit }}
-            </label>
+          <label class="option-label">
+            {{ t.minDigits }}
+            <span class="value-badge">{{ customMinDigits }}</span>
+          </label>
+          <div class="number-input-group">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="decrementMinDigits()"
+              [disabled]="customMinDigits <= 1">
+              −
+            </button>
+            <input 
+              type="number" 
+              class="number-input"
+              min="1"
+              max="5"
+              [(ngModel)]="customMinDigits"
+              (blur)="validateMinDigits()">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="incrementMinDigits()"
+              [disabled]="customMinDigits >= 5">
+              +
+            </button>
           </div>
+          <div class="slider-hint">{{ t.minDigitsHint || 'Nombre minimum de chiffres (1-5)' }}</div>
         </div>
 
-        <!-- Nombre maximum de chiffres -->
+        <!-- Nombre MAXIMUM de chiffres -->
         <div class="option-group">
-          <label class="option-label">{{ t.maxDigits }}</label>
-          <div class="radio-group digit-group">
-            <label class="radio-option" *ngFor="let digit of digitOptions">
-              <input 
-                type="radio" 
-                name="maxDigits" 
-                [value]="digit"
-                [(ngModel)]="customMaxDigits">
-              {{ digit }}
-            </label>
+          <label class="option-label">
+            {{ t.maxDigits }}
+            <span class="value-badge">{{ customMaxDigits }}</span>
+          </label>
+          <div class="number-input-group">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="decrementMaxDigits()"
+              [disabled]="customMaxDigits <= 1">
+              −
+            </button>
+            <input 
+              type="number" 
+              class="number-input"
+              min="1"
+              max="5"
+              [(ngModel)]="customMaxDigits"
+              (blur)="validateMaxDigits()">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="incrementMaxDigits()"
+              [disabled]="customMaxDigits >= 5">
+              +
+            </button>
           </div>
+          <div class="slider-hint">{{ t.maxDigitsHint || 'Nombre maximum de chiffres (1-5)' }}</div>
         </div>
 
-        <!-- Nombre de numéros par problème -->
+        <!-- Nombre d'opérations - Input avec boutons +/- -->
         <div class="option-group">
-          <label class="option-label">{{ t.numbersPerProblem }}</label>
-          <div class="radio-group number-group">
-            <label class="radio-option" *ngFor="let count of numberCountOptions">
-              <input 
-                type="radio" 
-                name="numberCount" 
-                [value]="count"
-                [(ngModel)]="customNumberCount">
-              {{ count }}
-            </label>
+          <label class="option-label">
+            {{ t.numbersPerProblem }}
+            <span class="value-badge">{{ customNumberCount }}</span>
+          </label>
+          <div class="number-input-group">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="decrementNumberCount()"
+              [disabled]="customNumberCount <= minNumberCount">
+              −
+            </button>
+            <input 
+              type="number" 
+              class="number-input"
+              [min]="minNumberCount"
+              [max]="maxNumberCount"
+              [(ngModel)]="customNumberCount"
+              (blur)="validateNumberCount()">
+            <button 
+              type="button"
+              class="number-btn"
+              (click)="incrementNumberCount()"
+              [disabled]="customNumberCount >= maxNumberCount">
+              +
+            </button>
           </div>
+          <div class="slider-hint">{{ t.numbersRange || 'Entre 3 et 50 nombres' }}</div>
         </div>
 
-        <!-- Temps d'affichage -->
+        <!-- Temps d'affichage - Dropdown moderne -->
         <div class="option-group">
           <label class="option-label">{{ t.displayTime }}</label>
-          <div class="radio-group time-group">
-            <label class="radio-option" *ngFor="let time of displayTimeOptions">
-              <input 
-                type="radio" 
-                name="displayTime" 
-                [value]="time.value"
-                [(ngModel)]="customDisplayTime">
-              {{ time.label }}
-            </label>
+          <div class="select-wrapper">
+            <select 
+              class="custom-select"
+              [(ngModel)]="customDisplayTime">
+              <option *ngFor="let time of displayTimeOptions" [value]="time.value">
+                {{ time.label }}
+              </option>
+            </select>
+            <span class="select-arrow">▼</span>
           </div>
+          <div class="slider-hint">{{ getSpeedHint() }}</div>
         </div>
       </div>
 
@@ -288,7 +339,7 @@
             <div class="calculation-display">
               <span *ngFor="let num of currentNumbers; let i = index">
                 <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
-                <span class="calc-number">{{ Math.abs(num) }}</span>
+                <span class="calc-number" [style.color]="getColorByIndex(i)">{{ Math.abs(num) }}</span>
               </span>
               <span class="operator">=</span>
               <span class="calc-result">{{ correctAnswer }}</span>
@@ -342,7 +393,7 @@
           <div class="calculation-display">
             <span *ngFor="let num of currentNumbers; let i = index">
               <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
-              <span class="calc-number">{{ Math.abs(num) }}</span>
+              <span class="calc-number" [style.color]="getColorByIndex(i)">{{ Math.abs(num) }}</span>
             </span>
             <span class="operator">=</span>
             <span class="calc-result">{{ correctAnswer }}</span>
@@ -364,3 +415,4 @@
     </div>
   </div>
 </div>
+

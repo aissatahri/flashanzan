@@ -25,6 +25,24 @@ export interface Translation {
   maxDigits: string;
   numbersPerProblem: string;
   displayTime: string;
+  numberOfDigits: string;
+  numbersRange: string;
+  digitsRange: string;
+  minDigitsHint: string;
+  maxDigitsHint: string;
+  
+  // Difficulty hints
+  veryEasy: string;
+  easyLevel: string;
+  mediumLevel: string;
+  hardLevel: string;
+  veryHard: string;
+  
+  // Speed hints
+  veryFast: string;
+  fast: string;
+  normal: string;
+  slow: string;
   
   // Buttons
   start: string;
@@ -66,11 +84,25 @@ const translations: Record<Language, Translation> = {
     problemType: 'Type de problème :',
     addition: 'Addition',
     subtraction: 'Soustraction',
-    mixed: 'Addition/Soustraction',
+    mixed: 'Mixte',
     minDigits: 'Nombre minimum de chiffres :',
     maxDigits: 'Nombre maximum de chiffres :',
-    numbersPerProblem: 'Nombre de numéros par problème :',
-    displayTime: 'Temps d\'affichage par nombre :',
+    numbersPerProblem: 'Nombre d\'opérations',
+    displayTime: 'Temps d\'affichage',
+    numberOfDigits: 'Nombre de chiffres',
+    numbersRange: 'Entre 3 et 50 nombres',
+    digitsRange: 'Entre 1 et 5 chiffres',
+    minDigitsHint: 'Nombre minimum de chiffres par nombre (1-5)',
+    maxDigitsHint: 'Nombre maximum de chiffres par nombre (1-5)',
+    veryEasy: '🟢 Très facile',
+    easyLevel: '🟡 Facile',
+    mediumLevel: '🟠 Moyen',
+    hardLevel: '🔴 Difficile',
+    veryHard: '⚫ Très difficile',
+    veryFast: '⚡ Très rapide',
+    fast: '🚀 Rapide',
+    normal: '✅ Normal',
+    slow: '🐢 Lent',
     start: 'Commencer',
     newGame: 'Nouveau jeu',
     retry: 'Recommencer',
@@ -102,11 +134,25 @@ const translations: Record<Language, Translation> = {
     problemType: 'Problem type:',
     addition: 'Addition',
     subtraction: 'Subtraction',
-    mixed: 'Addition/Subtraction',
+    mixed: 'Mixed',
     minDigits: 'Minimum digits:',
     maxDigits: 'Maximum digits:',
-    numbersPerProblem: 'Numbers per problem:',
-    displayTime: 'Display time per number:',
+    numbersPerProblem: 'Number of operations',
+    displayTime: 'Display time',
+    numberOfDigits: 'Number of digits',
+    numbersRange: 'Between 3 and 50 numbers',
+    digitsRange: 'Between 1 and 5 digits',
+    minDigitsHint: 'Minimum digits per number (1-5)',
+    maxDigitsHint: 'Maximum digits per number (1-5)',
+    veryEasy: '🟢 Very easy',
+    easyLevel: '🟡 Easy',
+    mediumLevel: '🟠 Medium',
+    hardLevel: '🔴 Hard',
+    veryHard: '⚫ Very hard',
+    veryFast: '⚡ Very fast',
+    fast: '🚀 Fast',
+    normal: '✅ Normal',
+    slow: '🐢 Slow',
     start: 'Start',
     newGame: 'New Game',
     retry: 'Retry',
@@ -138,11 +184,25 @@ const translations: Record<Language, Translation> = {
     problemType: 'نوع المسألة:',
     addition: 'جمع',
     subtraction: 'طرح',
-    mixed: 'جمع/طرح',
+    mixed: 'مختلط',
     minDigits: 'الحد الأدنى من الأرقام:',
     maxDigits: 'الحد الأقصى من الأرقام:',
-    numbersPerProblem: 'الأرقام لكل مسألة:',
-    displayTime: 'وقت العرض لكل رقم:',
+    numbersPerProblem: 'عدد العمليات',
+    displayTime: 'وقت العرض',
+    numberOfDigits: 'عدد الأرقام',
+    numbersRange: 'بين 3 و 50 رقم',
+    digitsRange: 'بين 1 و 5 أرقام',
+    minDigitsHint: 'الحد الأدنى من الأرقام لكل عدد (1-5)',
+    maxDigitsHint: 'الحد الأقصى من الأرقام لكل عدد (1-5)',
+    veryEasy: '🟢 سهل جداً',
+    easyLevel: '🟡 سهل',
+    mediumLevel: '🟠 متوسط',
+    hardLevel: '🔴 صعب',
+    veryHard: '⚫ صعب جداً',
+    veryFast: '⚡ سريع جداً',
+    fast: '🚀 سريع',
+    normal: '✅ عادي',
+    slow: '🐢 بطيء',
     start: 'ابدأ',
     newGame: 'لعبة جديدة',
     retry: 'إعادة المحاولة',

@@ -44,23 +44,22 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // Options de personnalisation
   customOperationType: OperationType = OperationType.ADDITION;
-  customMinDigits: number = 3;
-  customMaxDigits: number = 4;
-  customNumberCount: number = 2;
+  customMinDigits: number = 1; // Nombre minimum de chiffres
+  customMaxDigits: number = 3; // Nombre maximum de chiffres
+  customNumberCount: number = 10;
   customDisplayTime: number = 1000; // en millisecondes
+  minNumberCount: number = 3; // Minimum 3 opérations
+  maxNumberCount: number = 50; // Maximum 50 opérations
 
   // Options disponibles
-  digitOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  numberCountOptions = [2, 3, 4, 5, 10, 15, 20, 30];
   displayTimeOptions = [
-    { value: 200, label: '200ms' },
-    { value: 400, label: '400ms' },
-    { value: 500, label: '500ms' },
-    { value: 700, label: '700ms' },
-    { value: 900, label: '900ms' },
+    { value: 200, label: '0.2s' },
+    { value: 500, label: '0.5s' },
+    { value: 700, label: '0.7s' },
     { value: 1000, label: '1s' },
     { value: 1500, label: '1.5s' },
     { value: 2000, label: '2s' },
+    { value: 2500, label: '2.5s' },
     { value: 3000, label: '3s' }
   ];
 
@@ -130,6 +129,124 @@ export class GameComponent implements OnInit, OnDestroy {
     }
     
     this.gameService.startGame(this.selectedDifficulty);
+  }
+
+  // Méthodes pour le nombre minimum de chiffres
+  incrementMinDigits(): void {
+    if (this.customMinDigits < 5) {
+      this.customMinDigits++;
+      // S'assurer que min <= max
+      if (this.customMinDigits > this.customMaxDigits) {
+        this.customMaxDigits = this.customMinDigits;
+      }
+    }
+  }
+
+  decrementMinDigits(): void {
+    if (this.customMinDigits > 1) {
+      this.customMinDigits--;
+    }
+  }
+
+  validateMinDigits(): void {
+    if (this.customMinDigits < 1) this.customMinDigits = 1;
+    if (this.customMinDigits > 5) this.customMinDigits = 5;
+    // S'assurer que min <= max
+    if (this.customMinDigits > this.customMaxDigits) {
+      this.customMaxDigits = this.customMinDigits;
+    }
+  }
+
+  // Méthodes pour le nombre maximum de chiffres
+  incrementMaxDigits(): void {
+    if (this.customMaxDigits < 5) {
+      this.customMaxDigits++;
+    }
+  }
+
+  decrementMaxDigits(): void {
+    if (this.customMaxDigits > 1) {
+      this.customMaxDigits--;
+      // S'assurer que max >= min
+      if (this.customMaxDigits < this.customMinDigits) {
+        this.customMinDigits = this.customMaxDigits;
+      }
+    }
+  }
+
+  validateMaxDigits(): void {
+    if (this.customMaxDigits < 1) this.customMaxDigits = 1;
+    if (this.customMaxDigits > 5) this.customMaxDigits = 5;
+    // S'assurer que max >= min
+    if (this.customMaxDigits < this.customMinDigits) {
+      this.customMinDigits = this.customMaxDigits;
+    }
+  }
+
+  incrementNumberCount(): void {
+    if (this.customNumberCount < this.maxNumberCount) {
+      this.customNumberCount++;
+    }
+  }
+
+  decrementNumberCount(): void {
+    if (this.customNumberCount > this.minNumberCount) {
+      this.customNumberCount--;
+    }
+  }
+
+  validateNumberCount(): void {
+    if (this.customNumberCount < this.minNumberCount) this.customNumberCount = this.minNumberCount;
+    if (this.customNumberCount > this.maxNumberCount) this.customNumberCount = this.maxNumberCount;
+  }
+
+  getSpeedHint(): string {
+    if (this.customDisplayTime <= 500) {
+      return this.t.veryFast || '⚡ Très rapide';
+    } else if (this.customDisplayTime <= 1000) {
+      return this.t.fast || '🚀 Rapide';
+    } else if (this.customDisplayTime <= 2000) {
+      return this.t.normal || '✅ Normal';
+    } else {
+      return this.t.slow || '🐢 Lent';
+    }
+  }
+
+  // Obtenir la couleur pour le nombre actuel basée sur son index
+  getCurrentNumberColor(): string {
+    const colors = [
+      '#FF6B6B', // Rouge corail
+      '#4ECDC4', // Turquoise
+      '#45B7D1', // Bleu ciel
+      '#FFA07A', // Saumon clair
+      '#98D8C8', // Menthe
+      '#F7DC6F', // Jaune doux
+      '#BB8FCE', // Violet clair
+      '#85C1E2', // Bleu clair
+      '#F8B88B', // Orange pêche
+      '#A8E6CF'  // Vert menthe
+    ];
+    
+    const index = this.gameState.numbersShown.length - 1;
+    return colors[index % colors.length];
+  }
+
+  // Obtenir la couleur par index (pour l'affichage du calcul)
+  getColorByIndex(index: number): string {
+    const colors = [
+      '#FF6B6B', // Rouge corail
+      '#4ECDC4', // Turquoise
+      '#45B7D1', // Bleu ciel
+      '#FFA07A', // Saumon clair
+      '#98D8C8', // Menthe
+      '#F7DC6F', // Jaune doux
+      '#BB8FCE', // Violet clair
+      '#85C1E2', // Bleu clair
+      '#F8B88B', // Orange pêche
+      '#A8E6CF'  // Vert menthe
+    ];
+    
+    return colors[index % colors.length];
   }
 
   submitAnswer(): void {
