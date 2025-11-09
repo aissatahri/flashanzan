@@ -1,0 +1,66 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 20px;
+  padding-top: calc(env(safe-area-inset-top, 20px) + 40px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-left: env(safe-area-inset-left, 20px);
+  padding-right: env(safe-area-inset-right, 20px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Amélioration des boutons pour le tactile */
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Curseur pointeur pour tous les éléments cliquables */
+button,
+a,
+label {
+  cursor: pointer;
+}
+
+/* Désactiver le zoom sur les inputs pour iOS */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+}

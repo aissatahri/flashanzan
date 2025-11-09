@@ -1,0 +1,366 @@
+<div class="game-container">
+  <!-- Menu de langue -->
+  <div class="language-selector">
+    <button class="language-button" (click)="toggleLanguageMenu()">
+      🌍
+    </button>
+    <div class="language-menu" *ngIf="showLanguageMenu">
+      <button 
+        *ngFor="let lang of availableLanguages"
+        class="language-option"
+        [class.active]="translationService.currentLanguage === lang.code"
+        (click)="changeLanguage(lang.code)">
+        {{ lang.flag }} {{ lang.name }}
+      </button>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>{{ t.appTitle }}</h1>
+    <p class="subtitle">{{ t.subtitle }}</p>
+  </div>
+
+  <!-- Sélection de la difficulté -->
+  <div class="difficulty-selector" *ngIf="!gameState.isPlaying && !showResult">
+    <h2>{{ t.chooseDifficulty }}</h2>
+    <div class="difficulty-buttons">
+      <button 
+        [class.active]="selectedDifficulty === difficulties.EASY"
+        (click)="selectedDifficulty = difficulties.EASY"
+        class="btn btn-difficulty">
+        {{ t.easy }}
+      </button>
+      <button 
+        [class.active]="selectedDifficulty === difficulties.MEDIUM"
+        (click)="selectedDifficulty = difficulties.MEDIUM"
+        class="btn btn-difficulty">
+        {{ t.medium }}
+      </button>
+      <button 
+        [class.active]="selectedDifficulty === difficulties.HARD"
+        (click)="selectedDifficulty = difficulties.HARD"
+        class="btn btn-difficulty">
+        {{ t.hard }}
+      </button>
+      <button 
+        [class.active]="selectedDifficulty === difficulties.CUSTOM"
+        (click)="selectedDifficulty = difficulties.CUSTOM; openCustomModal()"
+        class="btn btn-difficulty btn-custom">
+        {{ t.custom }}
+      </button>
+    </div>
+
+    <button (click)="startGame()" class="btn btn-start" *ngIf="selectedDifficulty !== difficulties.CUSTOM">
+      {{ t.start }}
+    </button>
+  </div>
+
+  <!-- Zone d'affichage des nombres -->
+  <div class="display-area" *ngIf="gameState.isPlaying">
+    <div class="number-display">
+      <div class="current-number" *ngIf="gameState.currentNumber !== null">
+        <span class="number-sign" *ngIf="gameState.currentNumber < 0">-</span>
+        <span class="number-sign positive" *ngIf="gameState.currentNumber > 0 && gameState.numbersShown.length > 1">+</span>
+        {{ Math.abs(gameState.currentNumber) }}
+      </div>
+      <div class="waiting" *ngIf="gameState.currentNumber === null">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div class="progress">
+      {{ gameState.numbersShown.length }} {{ t.numbersShown }}
+    </div>
+  </div>
+
+    <!-- Boîte de dialogue pour afficher la solution -->
+  <div class="dialog-overlay" *ngIf="showResult" (click)="hideResultDialog()">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <div class="dialog-header" [class.success]="isCorrect" [class.error]="!isCorrect">
+        <h2 *ngIf="isCorrect">🎉 {{ t.bravo }}</h2>
+        <h2 *ngIf="!isCorrect">❌ {{ t.sorry }}</h2>
+      </div>
+      
+      <div class="dialog-content">
+        <div class="answer-comparison">
+          <div class="answer-item">
+            <span class="label">{{ t.yourAnswer }}</span>
+            <span class="value" [class.wrong]="!isCorrect">{{ userAnswer }}</span>
+          </div>
+          <div class="answer-item">
+            <span class="label">{{ t.correctAnswer }}</span>
+            <span class="value correct">{{ correctAnswer }}</span>
+          </div>
+        </div>
+
+        <div class="calculation-detail">
+          <p class="label">{{ t.calculation }}</p>
+          <div class="calculation-display">
+            <span *ngFor="let num of currentNumbers; let i = index">
+              <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
+              <span class="calc-number">{{ Math.abs(num) }}</span>
+            </span>
+            <span class="operator">=</span>
+            <span class="calc-result">{{ correctAnswer }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button (click)="resetGame()" class="btn btn-new-game">
+          🎮 {{ t.newGame }}
+        </button>
+        <button (click)="retryWithoutResult()" class="btn btn-retry-dialog">
+          🔄 {{ t.retry }}
+        </button>
+        <button (click)="hideResultDialog()" class="btn btn-close">
+          ✖️ {{ t.close }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score -->
+  <div class="score" *ngIf="gameState.score > 0">
+    {{ t.score }} : {{ gameState.score }}
+  </div>
+
+  <!-- Modal de personnalisation -->
+  <div class="dialog-overlay" *ngIf="showCustomModal">
+    <div class="dialog-box custom-settings-modal" (click)="$event.stopPropagation()">
+      <div class="dialog-header custom-header">
+        <h2>⚙️ {{ t.customizeChallenge }}</h2>
+      </div>
+      
+      <div class="dialog-content custom-content">
+        <!-- Type de problème -->
+        <div class="option-group">
+          <label class="option-label">{{ t.problemType }}</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input 
+                type="radio" 
+                name="operationType" 
+                [value]="operationTypes.ADDITION"
+                [(ngModel)]="customOperationType">
+              {{ t.addition }}
+            </label>
+            <label class="radio-option">
+              <input 
+                type="radio" 
+                name="operationType" 
+                [value]="operationTypes.SUBTRACTION"
+                [(ngModel)]="customOperationType">
+              {{ t.subtraction }}
+            </label>
+            <label class="radio-option">
+              <input 
+                type="radio" 
+                name="operationType" 
+                [value]="operationTypes.MIXED"
+                [(ngModel)]="customOperationType">
+              {{ t.mixed }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Nombre minimum de chiffres -->
+        <div class="option-group">
+          <label class="option-label">{{ t.minDigits }}</label>
+          <div class="radio-group digit-group">
+            <label class="radio-option" *ngFor="let digit of digitOptions">
+              <input 
+                type="radio" 
+                name="minDigits" 
+                [value]="digit"
+                [(ngModel)]="customMinDigits">
+              {{ digit }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Nombre maximum de chiffres -->
+        <div class="option-group">
+          <label class="option-label">{{ t.maxDigits }}</label>
+          <div class="radio-group digit-group">
+            <label class="radio-option" *ngFor="let digit of digitOptions">
+              <input 
+                type="radio" 
+                name="maxDigits" 
+                [value]="digit"
+                [(ngModel)]="customMaxDigits">
+              {{ digit }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Nombre de numéros par problème -->
+        <div class="option-group">
+          <label class="option-label">{{ t.numbersPerProblem }}</label>
+          <div class="radio-group number-group">
+            <label class="radio-option" *ngFor="let count of numberCountOptions">
+              <input 
+                type="radio" 
+                name="numberCount" 
+                [value]="count"
+                [(ngModel)]="customNumberCount">
+              {{ count }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Temps d'affichage -->
+        <div class="option-group">
+          <label class="option-label">{{ t.displayTime }}</label>
+          <div class="radio-group time-group">
+            <label class="radio-option" *ngFor="let time of displayTimeOptions">
+              <input 
+                type="radio" 
+                name="displayTime" 
+                [value]="time.value"
+                [(ngModel)]="customDisplayTime">
+              {{ time.label }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button (click)="saveCustomSettings()" class="btn btn-submit-answer">
+          ✓ {{ t.start }}
+        </button>
+        <button (click)="closeCustomModal()" class="btn btn-cancel">
+          ✖ {{ t.cancel }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de saisie de réponse -->
+  <div class="dialog-overlay" *ngIf="showAnswerModal">
+    <div class="dialog-box answer-modal" (click)="$event.stopPropagation()">
+      <div class="dialog-header answer-header">
+        <h2>💭 {{ t.enterAnswer }}</h2>
+      </div>
+      
+      <div class="dialog-content">
+        <div class="answer-input-container">
+          <input 
+            type="number" 
+            [(ngModel)]="answerInput"
+            class="modal-answer-input"
+            [placeholder]="t.yourAnswer"
+            #answerField
+            (keyup.enter)="submitAnswerFromModal()">
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button (click)="submitAnswerFromModal()" class="btn btn-submit-answer" [disabled]="!answerInput">
+          ✓ {{ t.validate }}
+        </button>
+        <button (click)="cancelAnswerModal()" class="btn btn-cancel">
+          ✖ {{ t.cancel }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boîte de dialogue personnalisée -->
+  <div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <div class="dialog-header" [class.success]="isCorrect" [class.error]="!isCorrect">
+        <h2 *ngIf="isCorrect">🎉 {{ t.bravo }}</h2>
+        <h2 *ngIf="!isCorrect">❌ {{ t.sorry }}</h2>
+      </div>
+      
+      <div class="dialog-content">
+        <!-- Succès : afficher la réponse et les détails -->
+        <div *ngIf="isCorrect">
+          <div class="answer-comparison">
+            <div class="answer-item">
+              <span class="label">{{ t.yourAnswer }}</span>
+              <span class="value correct">{{ userAnswer }}</span>
+            </div>
+          </div>
+
+          <div class="calculation-detail">
+            <p class="label">{{ t.calculation }}</p>
+            <div class="calculation-display">
+              <span *ngFor="let num of currentNumbers; let i = index">
+                <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
+                <span class="calc-number">{{ Math.abs(num) }}</span>
+              </span>
+              <span class="operator">=</span>
+              <span class="calc-result">{{ correctAnswer }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Échec : message simple sans révéler la réponse -->
+        <div *ngIf="!isCorrect" class="failure-message">
+          <p class="regret-text">😔 {{ t.wrongAnswer }}</p>
+          <p class="encourage-text">{{ t.tryAgain }}</p>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button *ngIf="!isCorrect" (click)="retryCurrentNumbers()" class="btn btn-retry-dialog">
+          🔄 {{ t.retrySequence }}
+        </button>
+        <button (click)="resetGame()" class="btn btn-new-game">
+          🎮 {{ t.newGame }}
+        </button>
+        <button *ngIf="!isCorrect" (click)="closeDialog()" class="btn btn-close">
+          📊 {{ t.viewSolution }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boîte de dialogue pour afficher la solution -->
+  <div class="dialog-overlay" *ngIf="showResult" (click)="hideResultDialog()">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <div class="dialog-header" [class.success]="isCorrect" [class.error]="!isCorrect">
+        <h2 *ngIf="isCorrect">🎉 {{ t.bravo }}</h2>
+        <h2 *ngIf="!isCorrect">❌ {{ t.sorry }}</h2>
+      </div>
+      
+      <div class="dialog-content">
+        <div class="answer-comparison">
+          <div class="answer-item">
+            <span class="label">{{ t.yourAnswer }}</span>
+            <span class="value" [class.wrong]="!isCorrect">{{ userAnswer }}</span>
+          </div>
+          <div class="answer-item">
+            <span class="label">{{ t.correctAnswer }}</span>
+            <span class="value correct">{{ correctAnswer }}</span>
+          </div>
+        </div>
+
+        <div class="calculation-detail">
+          <p class="label">{{ t.calculation }}</p>
+          <div class="calculation-display">
+            <span *ngFor="let num of currentNumbers; let i = index">
+              <span *ngIf="i > 0" class="operator">{{ num >= 0 ? '+' : '-' }}</span>
+              <span class="calc-number">{{ Math.abs(num) }}</span>
+            </span>
+            <span class="operator">=</span>
+            <span class="calc-result">{{ correctAnswer }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button (click)="resetGame()" class="btn btn-new-game">
+          🎮 {{ t.newGame }}
+        </button>
+        <button (click)="retryWithoutResult()" class="btn btn-retry-dialog">
+          🔄 {{ t.retry }}
+        </button>
+        <button (click)="hideResultDialog()" class="btn btn-close">
+          ✖️ {{ t.close }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
