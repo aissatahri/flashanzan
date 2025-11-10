@@ -113,6 +113,11 @@ export interface Translation {
   website: string;
   privacy: string;
   allRightsReserved: string;
+  
+  // Font settings
+  fontSettings: string;
+  selectFont: string;
+  numberFont: string;
 }
 
 const translations: Record<Language, Translation> = {
@@ -202,7 +207,10 @@ const translations: Record<Language, Translation> = {
     links: 'Liens',
     website: 'Site web',
     privacy: 'Politique de confidentialité',
-    allRightsReserved: 'Tous droits réservés'
+    allRightsReserved: 'Tous droits réservés',
+    fontSettings: 'Police des chiffres',
+    selectFont: 'Sélectionner une police',
+    numberFont: 'Police des nombres'
   },
   en: {
     appTitle: 'FlashAnzan',
@@ -290,7 +298,10 @@ const translations: Record<Language, Translation> = {
     links: 'Links',
     website: 'Website',
     privacy: 'Privacy Policy',
-    allRightsReserved: 'All rights reserved'
+    allRightsReserved: 'All rights reserved',
+    fontSettings: 'Number Font',
+    selectFont: 'Select Font',
+    numberFont: 'Number Font'
   },
   ar: {
     appTitle: 'فلاش أنزان',
@@ -378,7 +389,10 @@ const translations: Record<Language, Translation> = {
     links: 'الروابط',
     website: 'الموقع الإلكتروني',
     privacy: 'سياسة الخصوصية',
-    allRightsReserved: 'جميع الحقوق محفوظة'
+    allRightsReserved: 'جميع الحقوق محفوظة',
+    fontSettings: 'خط الأرقام',
+    selectFont: 'اختر الخط',
+    numberFont: 'خط الأرقام'
   }
 };
 

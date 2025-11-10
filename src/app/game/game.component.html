@@ -44,9 +44,10 @@
     <div class="number-display">
       <div class="current-number" 
            *ngIf="gameState.currentNumber !== null"
-           [style.color]="getCurrentNumberColor()">
-        <span class="number-sign" *ngIf="gameState.currentNumber < 0">-</span>
-        <span class="number-sign positive" *ngIf="gameState.currentNumber > 0 && gameState.numbersShown.length > 1">+</span>
+           [style.color]="getCurrentNumberColor()"
+           [style.font-family]="getCurrentFontStyle()">
+        <span class="number-sign" *ngIf="gameState.currentNumber < 0" [style.font-family]="getCurrentFontStyle()">-</span>
+        <span class="number-sign positive" *ngIf="gameState.currentNumber > 0 && gameState.numbersShown.length > 1" [style.font-family]="getCurrentFontStyle()">+</span>
         {{ Math.abs(gameState.currentNumber) }}
       </div>
       <div class="waiting" *ngIf="gameState.currentNumber === null">
@@ -563,6 +564,10 @@
       <span class="floating-icon">🌐</span>
       <span class="floating-label">{{ t.language || 'Lang' }}</span>
     </button>
+    <button class="floating-btn" (click)="openFontModal()" [title]="t.fontSettings">
+      <span class="floating-icon">🔤</span>
+      <span class="floating-label">{{ t.numberFont }}</span>
+    </button>
     <button class="floating-btn" (click)="openScoresModal()" [title]="t.scores">
       <span class="floating-icon">📊</span>
       <span class="floating-label">{{ t.scores }}</span>
@@ -636,6 +641,35 @@
       <button class="btn btn-primary btn-close-about" (click)="closeAboutModal()">
         {{ t.close }}
       </button>
+    </div>
+  </div>
+
+  <!-- Modal Font Selection -->
+  <div class="font-modal" *ngIf="showFontModal" (click)="closeFontModal()">
+    <div class="font-modal-content" (click)="$event.stopPropagation()">
+      <div class="font-modal-header">
+        <h2>{{ t.selectFont || 'Select Font' }}</h2>
+        <button class="btn-close-modal" (click)="closeFontModal()">×</button>
+      </div>
+      <div class="font-modal-body">
+        <div class="font-options-list">
+          <button 
+            *ngFor="let font of fontOptions"
+            class="font-option-btn"
+            [class.active]="currentFont === font.id"
+            (click)="selectFont(font.id)">
+            <div class="font-option-info">
+              <span class="font-option-name">
+                {{ translationService.currentLanguage === 'ar' ? font.nameAr : (translationService.currentLanguage === 'en' ? font.nameEn : font.name) }}
+              </span>
+              <span class="font-option-preview" [style.font-family]="font.cssFamily">
+                {{ font.preview }}
+              </span>
+            </div>
+            <span class="font-option-check" *ngIf="currentFont === font.id">✓</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

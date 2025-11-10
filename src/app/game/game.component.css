@@ -2265,6 +2265,117 @@
 }
 
 /* ============================================
+   FONT SELECTION MODAL
+   ============================================ */
+.font-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.font-modal-content {
+  background: white;
+  border-radius: 15px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.font-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 2px solid #ecf0f1;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 15px 15px 0 0;
+}
+
+.font-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.font-modal-body {
+  padding: 20px;
+}
+
+.font-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.font-option-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.font-option-btn:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+  transform: translateX(5px);
+}
+
+.font-option-btn.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-color: #667eea;
+}
+
+.font-option-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.font-option-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.font-option-preview {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.font-option-btn.active .font-option-preview {
+  color: white;
+}
+
+.font-option-check {
+  font-size: 1.5rem;
+  color: #27ae60;
+}
+
+.font-option-btn.active .font-option-check {
+  color: white;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {

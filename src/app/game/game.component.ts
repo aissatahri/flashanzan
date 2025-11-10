@@ -3,6 +3,7 @@ import { GameService, Difficulty, GameState, OperationType } from '../services/g
 import { TranslationService, Translation, Language } from '../services/translation.service';
 import { ScoreService } from '../services/score.service';
 import { BadgeService, Badge } from '../services/badge.service';
+import { FontService, FontFamily, FontOption } from '../services/font.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -74,14 +75,21 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  // Font selection
+  showFontModal = false;
+  currentFont: FontFamily = 'default';
+  fontOptions: FontOption[] = [];
+
   constructor(
     private gameService: GameService,
     public translationService: TranslationService,
     private scoreService: ScoreService,
-    private badgeService: BadgeService
+    private badgeService: BadgeService,
+    public fontService: FontService
   ) {
     // Initialiser le contexte audio
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.fontOptions = fontService.fontOptions;
   }
 
   ngOnInit(): void {
@@ -90,6 +98,13 @@ export class GameComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(translations => {
         this.t = translations;
+      });
+    
+    // S'abonner aux changements de police
+    this.fontService.currentFont$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(font => {
+        this.currentFont = font;
       });
     
     this.gameService.gameState$
@@ -519,6 +534,24 @@ export class GameComponent implements OnInit, OnDestroy {
 
   closeAboutModal(): void {
     this.showAboutModal = false;
+  }
+
+  // Font methods
+  openFontModal(): void {
+    this.showFontModal = true;
+  }
+
+  closeFontModal(): void {
+    this.showFontModal = false;
+  }
+
+  selectFont(fontId: FontFamily): void {
+    this.fontService.setFont(fontId);
+    this.closeFontModal();
+  }
+
+  getCurrentFontStyle(): string {
+    return this.fontService.getFontCssFamily(this.currentFont);
   }
 
   getScoreService(): ScoreService {
