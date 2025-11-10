@@ -2037,8 +2037,8 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 20px;
-  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  padding: 6px 15px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
   z-index: 1000;
 }
 
@@ -2067,12 +2067,12 @@
 }
 
 .floating-icon {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   display: block;
 }
 
 .floating-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -2267,21 +2267,21 @@
    ============================================ */
 @media (max-width: 768px) {
   .floating-bottom-bar {
-    padding: 8px 10px;
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 5px 10px;
+    padding-bottom: calc(5px + env(safe-area-inset-bottom, 0px));
   }
 
   .floating-btn {
-    min-width: 60px;
-    padding: 6px 8px;
+    min-width: 55px;
+    padding: 4px 6px;
   }
 
   .floating-icon {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .floating-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .about-logo {
