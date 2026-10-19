@@ -283,8 +283,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📊 Stats
 
 - **Package**: com.azmicro.app
-- **Version**: 1.0 (versionCode 2)
-- **Distribution**: 177 countries, 19,618 devices
+- **Version**: 1.2.0 (versionCode 6)
+- **Android**: 7.0+ (minSdk 24), targetSdk 36
+- **Distribution**: 178 countries, 19,299 devices
 - **Published**: November 9, 2025
 
 ## 📝 License
