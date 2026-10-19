@@ -334,6 +334,9 @@
       </div>
 
       <div class="dialog-actions">
+        <button *ngIf="isCorrect" (click)="shareResult()" [disabled]="isSharing" class="btn btn-share">
+          📤 {{ t.share }}
+        </button>
         <button *ngIf="!isCorrect" (click)="retryCurrentNumbers()" class="btn btn-retry-dialog">
           🔄 {{ t.retrySequence }}
         </button>

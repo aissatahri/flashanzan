@@ -122,6 +122,12 @@ export interface Translation {
   // Score history units
   numbersUnit: string;
   digitsUnit: string;
+
+  // Share
+  share: string;
+  shareHeadline: string;
+  shareChallenge: string;
+  shareMessage: string; // {count} et {time} sont remplacés
 }
 
 const translations: Record<Language, Translation> = {
@@ -216,7 +222,11 @@ const translations: Record<Language, Translation> = {
     selectFont: 'Sélectionner une police',
     numberFont: 'Police des nombres',
     numbersUnit: 'nombres',
-    digitsUnit: 'chiffres'
+    digitsUnit: 'chiffres',
+    share: 'Partager',
+    shareHeadline: 'Calcul réussi !',
+    shareChallenge: 'Et toi, tu fais mieux ?',
+    shareMessage: 'J\'ai additionné {count} nombres à {time} s chacun sur FlashAnzan ! Et toi, tu fais mieux ? 🧮'
   },
   en: {
     appTitle: 'FlashAnzan',
@@ -309,7 +319,11 @@ const translations: Record<Language, Translation> = {
     selectFont: 'Select Font',
     numberFont: 'Number Font',
     numbersUnit: 'numbers',
-    digitsUnit: 'digits'
+    digitsUnit: 'digits',
+    share: 'Share',
+    shareHeadline: 'Correct answer!',
+    shareChallenge: 'Can you beat it?',
+    shareMessage: 'I just added up {count} numbers at {time}s each on FlashAnzan! Can you beat it? 🧮'
   },
   ar: {
     appTitle: 'فلاش أنزان',
@@ -402,7 +416,11 @@ const translations: Record<Language, Translation> = {
     selectFont: 'اختر الخط',
     numberFont: 'خط الأرقام',
     numbersUnit: 'أعداد',
-    digitsUnit: 'خانات'
+    digitsUnit: 'خانات',
+    share: 'مشاركة',
+    shareHeadline: 'إجابة صحيحة!',
+    shareChallenge: 'هل يمكنك التفوق عليّ؟',
+    shareMessage: 'جمعت {count} أعداد بسرعة {time} ثانية لكل عدد على FlashAnzan! هل يمكنك التفوق عليّ؟ 🧮'
   }
 };
 

@@ -4,6 +4,8 @@ import { TranslationService, Translation, Language } from '../services/translati
 import { ScoreService } from '../services/score.service';
 import { BadgeService, Badge } from '../services/badge.service';
 import { FontService, FontFamily, FontOption } from '../services/font.service';
+import { ReviewService } from '../services/review.service';
+import { ShareService } from '../services/share.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -83,6 +85,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  // Demande d'avis à faire à la fermeture du résultat (après un moment positif)
+  private reviewPending = false;
+  isSharing = false;
+
   // Font selection
   showFontModal = false;
   currentFont: FontFamily = 'default';
@@ -93,7 +99,9 @@ export class GameComponent implements OnInit, OnDestroy {
     public translationService: TranslationService,
     private scoreService: ScoreService,
     private badgeService: BadgeService,
-    public fontService: FontService
+    public fontService: FontService,
+    private reviewService: ReviewService,
+    private shareService: ShareService
   ) {
     // Initialiser le contexte audio
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -120,6 +128,7 @@ export class GameComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(badges => {
         this.newlyUnlockedBadges = badges;
+        this.reviewPending = true;
         setTimeout(() => {
           this.showBadgeUnlockModal = true;
         }, 1500);
@@ -302,6 +311,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   resetGame(): void {
+    this.requestReviewIfPending();
     this.showResult = false;
     this.userAnswer = null;
     this.showDialog = false;
@@ -380,6 +390,41 @@ export class GameComponent implements OnInit, OnDestroy {
       operationType: config.operationType,
       displayTime: config.displayTime
     });
+
+    if (this.isCorrect && this.scoreService.getStats().currentStreak >= 3) {
+      this.reviewPending = true;
+    }
+  }
+
+  private requestReviewIfPending(): void {
+    if (this.reviewPending) {
+      this.reviewPending = false;
+      this.reviewService.maybeRequestReview(this.scoreService.getStats().totalGames);
+    }
+  }
+
+  async shareResult(): Promise<void> {
+    if (this.isSharing) return;
+    this.isSharing = true;
+
+    const config = this.gameService.getCurrentConfig(this.selectedDifficulty);
+    const count = this.currentNumbers.length;
+    const time = config.displayTime / 1000;
+    try {
+      await this.shareService.shareResult({
+        headline: this.t.shareHeadline,
+        stat: `${count} ${this.t.numbersUnit}`,
+        detail: `${this.getRangeLabel(config)} · ${time} s`,
+        challenge: this.t.shareChallenge,
+        message: this.t.shareMessage.replace('{count}', `${count}`).replace('{time}', `${time}`),
+        rtl: this.translationService.currentLanguage === 'ar'
+      });
+    } catch (error) {
+      // Partage annulé par l'utilisateur ou indisponible : rien à faire
+      console.warn('Partage non effectué:', error);
+    } finally {
+      this.isSharing = false;
+    }
   }
 
   selectLevel(difficulty: Difficulty): void {
@@ -432,6 +477,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   hideResultDialog(): void {
+    this.requestReviewIfPending();
     this.showResult = false;
     this.showDialog = false;
   }
