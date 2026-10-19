@@ -20,7 +20,7 @@
         <span class="level-name">{{ getDifficultyLabel(level.difficulty) }}</span>
         <ng-container *ngIf="level.difficulty !== difficulties.CUSTOM; else customHint">
           <span class="level-details">{{ level.config.numberCount }} {{ t.numbersUnit }}</span>
-          <span class="level-details">{{ getRangeLabel(level.config) }} · {{ level.config.displayTime / 1000 }} s</span>
+          <span class="level-details" dir="ltr">{{ getRangeLabel(level.config) }} · {{ level.config.displayTime / 1000 }} s</span>
         </ng-container>
         <ng-template #customHint>
           <span class="level-details">{{ t.customizeChallenge }}</span>

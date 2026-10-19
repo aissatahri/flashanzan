@@ -864,10 +864,34 @@
   max-width: 400px;
 }
 
+/* Titre fixe, réglages défilants, boutons toujours visibles */
 .custom-settings-modal {
   max-width: 600px;
   max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.custom-settings-modal .custom-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
+}
+
+.custom-settings-modal .dialog-actions {
+  flex-shrink: 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.custom-settings-modal .dialog-actions .btn {
+  flex: 1;
+  width: auto;
+  white-space: nowrap;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 @keyframes slideDown {
@@ -2079,7 +2103,8 @@
   align-items: center;
   padding: 6px 15px;
   padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
-  z-index: 1000;
+  /* Sous les fenêtres modales (z-index 1000) pour ne pas masquer leurs boutons */
+  z-index: 900;
 }
 
 .floating-btn {
