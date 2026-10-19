@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ScoreService } from './score.service';
 
 export interface Badge {
@@ -27,6 +27,10 @@ export class BadgeService {
   
   private badgesSubject = new BehaviorSubject<Badge[]>([]);
   public badges$: Observable<Badge[]> = this.badgesSubject.asObservable();
+
+  // Émet les badges qui viennent d'être débloqués
+  private badgesUnlockedSubject = new Subject<Badge[]>();
+  public badgesUnlocked$: Observable<Badge[]> = this.badgesUnlockedSubject.asObservable();
 
   private allBadges: Badge[] = [
     // Badges de nombre de parties
@@ -313,6 +317,9 @@ export class BadgeService {
     });
 
     this.saveBadges();
+    if (newlyUnlocked.length > 0) {
+      this.badgesUnlockedSubject.next(newlyUnlocked);
+    }
     return newlyUnlocked;
   }
 

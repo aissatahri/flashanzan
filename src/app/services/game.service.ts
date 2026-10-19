@@ -130,58 +130,58 @@ export class GameService {
   }
 
   updateCustomConfig(config: Partial<GameConfig>): void {
-    this.configs[Difficulty.CUSTOM] = { 
-      ...this.configs[Difficulty.CUSTOM], 
+    this.configs[Difficulty.CUSTOM] = {
+      ...this.configs[Difficulty.CUSTOM],
       ...config,
-      difficulty: Difficulty.CUSTOM 
+      difficulty: Difficulty.CUSTOM
     };
   }
 
+  getConfig(difficulty: Difficulty): GameConfig {
+    return { ...this.configs[difficulty] };
+  }
+
+  /**
+   * Configuration de la dernière partie lancée, ou celle de la difficulté donnée
+   */
+  getCurrentConfig(fallback: Difficulty = Difficulty.EASY): GameConfig {
+    return { ...(this.currentConfig || this.configs[fallback]) };
+  }
+
   private generateNumbers(config: GameConfig): number[] {
+    if (config.operationType === OperationType.SUBTRACTION) {
+      // Le nombre de départ couvre toutes les soustractions, pour que le résultat reste positif
+      const subtrahends = Array.from({ length: config.numberCount - 1 }, () => this.randomNumber(config));
+      const start = subtrahends.reduce((a, b) => a + b, 0) + this.randomNumber(config);
+      return [start, ...subtrahends.map(n => -n)];
+    }
+
     const numbers: number[] = [];
+    let sum = 0;
 
     for (let i = 0; i < config.numberCount; i++) {
-      // Générer un nombre de chiffres aléatoire entre min et max
-      const digitCount = Math.floor(Math.random() * (config.maxDigits - config.minDigits + 1)) + config.minDigits;
-      const min = Math.pow(10, digitCount - 1);
-      const max = Math.pow(10, digitCount) - 1;
+      let number = this.randomNumber(config);
 
-      let number = Math.floor(Math.random() * (max - min + 1)) + min;
-      
-      // Appliquer le type d'opération (pour la soustraction, on utilise des nombres négatifs)
-      if (config.operationType === OperationType.SUBTRACTION) {
+      // Mode mixte : 50% de chance de soustraire, seulement si le total reste positif
+      if (config.operationType === OperationType.MIXED && i > 0 && Math.random() < 0.5 && sum - number > 0) {
         number = -number;
-      } else if (config.operationType === OperationType.MIXED) {
-        // Pour le mode mixte, commencer par un nombre positif pour garantir un résultat positif
-        if (i === 0) {
-          // Le premier nombre est toujours positif
-          number = Math.abs(number);
-        } else {
-          // Vérifier que le résultat reste positif
-          const currentSum = numbers.reduce((a, b) => a + b, 0);
-          
-          // 50% de chance d'être négatif, mais seulement si ça ne rend pas le total négatif
-          if (Math.random() < 0.5 && currentSum > number) {
-            number = -number;
-          }
-        }
       }
 
       numbers.push(number);
-    }
-
-    // Pour le mode mixte ou soustraction, vérifier une dernière fois que le résultat est positif
-    if (config.operationType === OperationType.MIXED || config.operationType === OperationType.SUBTRACTION) {
-      const sum = numbers.reduce((a, b) => a + b, 0);
-      
-      // Si le résultat est négatif ou nul, ajuster le dernier nombre pour rendre le total positif
-      if (sum <= 0) {
-        const adjustment = Math.abs(sum) + Math.floor(Math.random() * 50) + 10;
-        numbers[numbers.length - 1] = Math.abs(numbers[numbers.length - 1]) + adjustment;
-      }
+      sum += number;
     }
 
     return numbers;
+  }
+
+  /**
+   * Nombre positif dont le nombre de chiffres est compris entre minDigits et maxDigits
+   */
+  private randomNumber(config: GameConfig): number {
+    const digitCount = Math.floor(Math.random() * (config.maxDigits - config.minDigits + 1)) + config.minDigits;
+    const min = Math.pow(10, digitCount - 1);
+    const max = Math.pow(10, digitCount) - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   private displayNumbers(numbers: number[], config: GameConfig): void {

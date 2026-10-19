@@ -118,6 +118,10 @@ export interface Translation {
   fontSettings: string;
   selectFont: string;
   numberFont: string;
+
+  // Score history units
+  numbersUnit: string;
+  digitsUnit: string;
 }
 
 const translations: Record<Language, Translation> = {
@@ -210,7 +214,9 @@ const translations: Record<Language, Translation> = {
     allRightsReserved: 'Tous droits réservés',
     fontSettings: 'Police des chiffres',
     selectFont: 'Sélectionner une police',
-    numberFont: 'Police des nombres'
+    numberFont: 'Police des nombres',
+    numbersUnit: 'nombres',
+    digitsUnit: 'chiffres'
   },
   en: {
     appTitle: 'FlashAnzan',
@@ -301,7 +307,9 @@ const translations: Record<Language, Translation> = {
     allRightsReserved: 'All rights reserved',
     fontSettings: 'Number Font',
     selectFont: 'Select Font',
-    numberFont: 'Number Font'
+    numberFont: 'Number Font',
+    numbersUnit: 'numbers',
+    digitsUnit: 'digits'
   },
   ar: {
     appTitle: 'فلاش أنزان',
@@ -392,7 +400,9 @@ const translations: Record<Language, Translation> = {
     allRightsReserved: 'جميع الحقوق محفوظة',
     fontSettings: 'خط الأرقام',
     selectFont: 'اختر الخط',
-    numberFont: 'خط الأرقام'
+    numberFont: 'خط الأرقام',
+    numbersUnit: 'أعداد',
+    digitsUnit: 'خانات'
   }
 };
 

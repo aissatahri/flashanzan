@@ -114,37 +114,91 @@
 }
 
 .header h1 {
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 3rem;
   margin-bottom: 10px;
   margin-top: 0;
-  font-weight: bold;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 4px 20px rgba(30, 20, 80, 0.35);
 }
 
 .subtitle {
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.88);
   font-size: 1.1rem;
+  margin: 0;
 }
 
 .difficulty-selector {
   text-align: center;
-  background: #f8f9fa;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(30, 20, 80, 0.25);
 }
 
 .difficulty-selector h2 {
   color: #2c3e50;
-  margin-bottom: 20px;
+  margin: 0 0 24px;
 }
 
-.difficulty-buttons {
+/* Cartes de niveau */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.level-card {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 18px 10px;
+  background: #f5f6fb;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #2c3e50;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.level-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.level-card:focus-visible {
+  outline: 3px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+
+.level-card.active {
+  background: #eef0ff;
+  border-color: #667eea;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.level-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.level-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.level-card.active .level-name {
+  color: #5a4fcf;
+}
+
+.level-details {
+  font-size: 0.82rem;
+  color: #6b7280;
 }
 
 .btn {
@@ -155,37 +209,6 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-}
-
-.btn-difficulty {
-  background: #ecf0f1;
-  color: #2c3e50;
-  border: 2px solid transparent;
-}
-
-.btn-difficulty:hover {
-  background: #bdc3c7;
-  transform: translateY(-2px);
-}
-
-.btn-difficulty.active {
-  background: #3498db;
-  color: white;
-  border-color: #2980b9;
-}
-
-.btn-difficulty.btn-custom {
-  background: #9b59b6;
-  color: white;
-}
-
-.btn-difficulty.btn-custom:hover {
-  background: #8e44ad;
-}
-
-.btn-difficulty.btn-custom.active {
-  background: #8e44ad;
-  border-color: #7d3c98;
 }
 
 .custom-options {
@@ -263,16 +286,22 @@
 }
 
 .btn-start {
-  background: #27ae60;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;
   font-size: 1.2rem;
-  padding: 15px 50px;
-  margin-top: 20px;
+  padding: 16px 56px;
+  border-radius: 999px;
+  box-shadow: 0 10px 25px rgba(39, 174, 96, 0.35);
 }
 
 .btn-start:hover {
-  background: #229954;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(39, 174, 96, 0.45);
+}
+
+.btn-start:focus-visible {
+  outline: 3px solid rgba(39, 174, 96, 0.5);
+  outline-offset: 3px;
 }
 
 .display-area {
@@ -540,14 +569,9 @@
     padding: 20px;
   }
 
-  .difficulty-buttons {
-    flex-direction: column;
+  .level-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
-  }
-
-  .btn-difficulty {
-    width: 100%;
-    max-width: none;
   }
 
   .score {
@@ -662,13 +686,6 @@
     font-size: 4rem;
   }
 
-  .difficulty-buttons {
-    gap: 12px;
-  }
-
-  .btn-difficulty {
-    padding: 10px 25px;
-  }
 
   .dialog-box {
     width: 80%;
@@ -703,9 +720,14 @@
     font-size: 2.5rem;
   }
 
-  .btn-start {
+  .btn.btn-start {
     font-size: 1rem;
-    padding: 12px 30px;
+    padding: 14px 30px;
+    width: 100%;
+  }
+
+  .level-card {
+    padding: 14px 8px;
   }
 
   .dialog-header h2 {

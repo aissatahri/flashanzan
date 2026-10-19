@@ -6,36 +6,30 @@
 
   <!-- Sélection de la difficulté -->
   <div class="difficulty-selector" *ngIf="!gameState.isPlaying && !showResult">
-    <h2>{{ t.chooseDifficulty }}</h2>
-    <div class="difficulty-buttons">
-      <button 
-        [class.active]="selectedDifficulty === difficulties.EASY"
-        (click)="selectedDifficulty = difficulties.EASY"
-        class="btn btn-difficulty">
-        {{ t.easy }}
-      </button>
-      <button 
-        [class.active]="selectedDifficulty === difficulties.MEDIUM"
-        (click)="selectedDifficulty = difficulties.MEDIUM"
-        class="btn btn-difficulty">
-        {{ t.medium }}
-      </button>
-      <button 
-        [class.active]="selectedDifficulty === difficulties.HARD"
-        (click)="selectedDifficulty = difficulties.HARD"
-        class="btn btn-difficulty">
-        {{ t.hard }}
-      </button>
-      <button 
-        [class.active]="selectedDifficulty === difficulties.CUSTOM"
-        (click)="selectedDifficulty = difficulties.CUSTOM; openCustomModal()"
-        class="btn btn-difficulty btn-custom">
-        {{ t.custom }}
+    <h2 id="level-title">{{ t.chooseDifficulty }}</h2>
+    <div class="level-grid" role="radiogroup" aria-labelledby="level-title">
+      <button
+        *ngFor="let level of levels"
+        type="button"
+        role="radio"
+        class="level-card"
+        [class.active]="selectedDifficulty === level.difficulty"
+        [attr.aria-checked]="selectedDifficulty === level.difficulty"
+        (click)="selectLevel(level.difficulty)">
+        <span class="level-icon" aria-hidden="true">{{ level.icon }}</span>
+        <span class="level-name">{{ getDifficultyLabel(level.difficulty) }}</span>
+        <ng-container *ngIf="level.difficulty !== difficulties.CUSTOM; else customHint">
+          <span class="level-details">{{ level.config.numberCount }} {{ t.numbersUnit }}</span>
+          <span class="level-details">{{ getRangeLabel(level.config) }} · {{ level.config.displayTime / 1000 }} s</span>
+        </ng-container>
+        <ng-template #customHint>
+          <span class="level-details">{{ t.customizeChallenge }}</span>
+        </ng-template>
       </button>
     </div>
 
-    <button (click)="startGame()" class="btn btn-start" *ngIf="selectedDifficulty !== difficulties.CUSTOM">
-      {{ t.start }}
+    <button type="button" (click)="onStartClick()" class="btn btn-start">
+      <span aria-hidden="true">▶</span> {{ t.start }}
     </button>
   </div>
 
@@ -454,8 +448,8 @@
                 <span class="status-text">{{ score.isCorrect ? t.correct : t.incorrect }}</span>
               </div>
               <div class="score-details">
-                <span class="score-difficulty">{{ score.difficulty }}</span>
-                <span class="score-info">{{ score.numbersCount }} nombres • {{ score.digitsCount }} chiffres</span>
+                <span class="score-difficulty">{{ getDifficultyLabel(score.difficulty) }}</span>
+                <span class="score-info">{{ score.numbersCount }} {{ t.numbersUnit }} • {{ score.digitsCount }} {{ t.digitsUnit }}</span>
               </div>
               <div class="score-date">{{ score.date | date:'short' }}</div>
             </div>

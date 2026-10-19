@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { GameService, Difficulty, GameState, OperationType } from '../services/game.service';
+import { GameService, Difficulty, GameState, OperationType, GameConfig } from '../services/game.service';
 import { TranslationService, Translation, Language } from '../services/translation.service';
 import { ScoreService } from '../services/score.service';
 import { BadgeService, Badge } from '../services/badge.service';
@@ -73,6 +73,14 @@ export class GameComponent implements OnInit, OnDestroy {
     { value: 3000, label: '3s' }
   ];
 
+  // Cartes de sélection du niveau
+  levels = [
+    { difficulty: Difficulty.EASY, icon: '🌱', config: this.gameService.getConfig(Difficulty.EASY) },
+    { difficulty: Difficulty.MEDIUM, icon: '🚀', config: this.gameService.getConfig(Difficulty.MEDIUM) },
+    { difficulty: Difficulty.HARD, icon: '🔥', config: this.gameService.getConfig(Difficulty.HARD) },
+    { difficulty: Difficulty.CUSTOM, icon: '⚙️', config: this.gameService.getConfig(Difficulty.CUSTOM) }
+  ];
+
   private destroy$ = new Subject<void>();
 
   // Font selection
@@ -106,7 +114,17 @@ export class GameComponent implements OnInit, OnDestroy {
       .subscribe(font => {
         this.currentFont = font;
       });
-    
+
+    // Afficher la notification des badges débloqués après un court délai
+    this.badgeService.badgesUnlocked$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(badges => {
+        this.newlyUnlockedBadges = badges;
+        setTimeout(() => {
+          this.showBadgeUnlockModal = true;
+        }, 1500);
+      });
+
     this.gameService.gameState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(state => {
@@ -345,73 +363,55 @@ export class GameComponent implements OnInit, OnDestroy {
    * Enregistrer le score de la partie
    */
   private saveScore(): void {
-    const difficulty = this.getDifficultyName();
-    const digitsCount = this.selectedDifficulty === Difficulty.CUSTOM 
-      ? `${this.customMinDigits}-${this.customMaxDigits}`
-      : this.getDigitsForDifficulty();
-    
+    // Configuration réellement jouée (et non les valeurs du formulaire)
+    const config = this.gameService.getCurrentConfig(this.selectedDifficulty);
+    const digitsCount = config.minDigits === config.maxDigits
+      ? `${config.minDigits}`
+      : `${config.minDigits}-${config.maxDigits}`;
+
+    // Les nouveaux badges sont signalés via badgesUnlocked$ (voir ngOnInit)
     this.scoreService.addScore({
-      difficulty,
+      difficulty: config.difficulty,
       correctAnswer: this.correctAnswer,
       userAnswer: this.userAnswer || 0,
       isCorrect: this.isCorrect,
       numbersCount: this.currentNumbers.length,
       digitsCount,
-      operationType: this.getOperationTypeName(),
-      displayTime: this.selectedDifficulty === Difficulty.CUSTOM 
-        ? this.customDisplayTime 
-        : this.getDisplayTimeForDifficulty()
+      operationType: config.operationType,
+      displayTime: config.displayTime
     });
+  }
 
-    // Vérifier les nouveaux badges débloqués
-    const newBadges = this.badgeService.updateBadges();
-    if (newBadges.length > 0) {
-      this.newlyUnlockedBadges = newBadges;
-      // Afficher la notification de badge après un court délai
-      setTimeout(() => {
-        this.showBadgeUnlockModal = true;
-      }, 1500);
+  selectLevel(difficulty: Difficulty): void {
+    this.selectedDifficulty = difficulty;
+    if (difficulty === Difficulty.CUSTOM) {
+      this.openCustomModal();
     }
   }
 
-  private getDifficultyName(): string {
-    switch (this.selectedDifficulty) {
-      case Difficulty.EASY: return 'Facile';
-      case Difficulty.MEDIUM: return 'Moyen';
-      case Difficulty.HARD: return 'Difficile';
-      case Difficulty.CUSTOM: return 'Personnalisé';
-      default: return 'Inconnu';
-    }
-  }
-
-  private getDigitsForDifficulty(): string {
-    switch (this.selectedDifficulty) {
-      case Difficulty.EASY: return '1';
-      case Difficulty.MEDIUM: return '2';
-      case Difficulty.HARD: return '3';
-      default: return '1';
-    }
-  }
-
-  private getOperationTypeName(): string {
+  onStartClick(): void {
     if (this.selectedDifficulty === Difficulty.CUSTOM) {
-      switch (this.customOperationType) {
-        case OperationType.ADDITION: return 'Addition';
-        case OperationType.SUBTRACTION: return 'Soustraction';
-        case OperationType.MIXED: return 'Mixte';
-        default: return 'Addition';
-      }
+      this.openCustomModal();
+    } else {
+      this.startGame();
     }
-    return 'Addition';
   }
 
-  private getDisplayTimeForDifficulty(): number {
-    switch (this.selectedDifficulty) {
-      case Difficulty.EASY: return 2000;
-      case Difficulty.MEDIUM: return 1000;
-      case Difficulty.HARD: return 700;
-      default: return 1000;
-    }
+  // Plage des nombres affichés, ex. "10–99"
+  getRangeLabel(config: GameConfig): string {
+    const min = Math.pow(10, config.minDigits - 1);
+    const max = Math.pow(10, config.maxDigits) - 1;
+    return `${min}–${max}`;
+  }
+
+  getDifficultyLabel(difficulty: Difficulty): string {
+    const labels: { [key in Difficulty]: string } = {
+      [Difficulty.EASY]: this.t.easy,
+      [Difficulty.MEDIUM]: this.t.medium,
+      [Difficulty.HARD]: this.t.hard,
+      [Difficulty.CUSTOM]: this.t.custom
+    };
+    return labels[difficulty] ?? difficulty;
   }
 
   retryCurrentNumbers(): void {
@@ -485,25 +485,6 @@ export class GameComponent implements OnInit, OnDestroy {
     return !this.gameState.isPlaying && 
            this.gameState.numbersShown.length > 0 && 
            !this.showResult;
-  }
-
-  get difficultyLabel(): string {
-    switch (this.selectedDifficulty) {
-      case Difficulty.EASY: return 'Facile';
-      case Difficulty.MEDIUM: return 'Moyen';
-      case Difficulty.HARD: return 'Difficile';
-      case Difficulty.CUSTOM: return 'Personnalisé';
-      default: return '';
-    }
-  }
-
-  get operationTypeLabel(): string {
-    switch (this.customOperationType) {
-      case OperationType.ADDITION: return 'Addition';
-      case OperationType.SUBTRACTION: return 'Soustraction';
-      case OperationType.MIXED: return 'Addition/Soustraction';
-      default: return '';
-    }
   }
 
   // Méthodes pour les Scores et Badges
